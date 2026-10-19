@@ -1,5 +1,8 @@
 template-file-path: ./template.yaml
-parameters: {}
+parameters:
+  Environment: dev
+  Owner: Effie Njoki
 tags:
-  Project: OnwardLogistics-Onboarding
-  ManagedBy: CloudFormation-GitSync
+  Project: onward
+  Owner: Effie Njoki
+  Environment: dev
