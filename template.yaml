@@ -58,24 +58,6 @@ Resources:
         - Key: Environment
           Value: !Ref Environment
 
-  Ec2User2Secret:
-    Type: AWS::SecretsManager::Secret
-    Properties:
-      Description: Initial console password for ec2-user-2 (must be changed at first sign-in)
-      GenerateSecretString:
-        SecretStringTemplate: '{"username": "ec2-user-2"}'
-        GenerateStringKey: password
-        PasswordLength: 20
-        RequireEachIncludedType: true
-        ExcludeCharacters: '"@/\'
-      Tags:
-        - Key: Project
-          Value: onward
-        - Key: Owner
-          Value: !Ref Owner
-        - Key: Environment
-          Value: !Ref Environment
-
   # ---------------------------------------------------------------------------
   # 2. PERMISSIONS BOUNDARIES: the maximum each engineer can EVER have.
   #    They grant nothing on their own; they cap whatever the group gives.
@@ -245,25 +227,6 @@ Resources:
         - Key: JobRole
           Value: ComputeEngineer
 
-  Ec2User2:
-    Type: AWS::IAM::User
-    Properties:
-      UserName: ec2-user-2
-      Groups:
-        - !Ref OnCallEngineersGroup
-      PermissionsBoundary: !Ref OnCallBoundary
-      LoginProfile:
-        Password: !Sub '{{resolve:secretsmanager:${Ec2User2Secret}:SecretString:password}}'
-        PasswordResetRequired: true
-      Tags:
-        - Key: Project
-          Value: onward
-        - Key: Owner
-          Value: !Ref Owner
-        - Key: Environment
-          Value: !Ref Environment
-        - Key: JobRole
-          Value: OnCallEngineer
 
 Outputs:
   SignInUrl:
@@ -275,6 +238,3 @@ Outputs:
   Ec2User1SecretArn:
     Description: Secret holding ec2-user-1's first-login password
     Value: !Ref Ec2User1Secret
-  Ec2User2SecretArn:
-    Description: Secret holding ec2-user-2's first-login password
-    Value: !Ref Ec2User2Secret
